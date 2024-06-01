@@ -880,7 +880,7 @@ func NewHttpProxy(hostname string, port int, cfg *Config, crt_db *CertDb, db *da
 						}
 					}
 				}
-				
+				}
 
 			return req, nil
 		})
