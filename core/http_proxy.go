@@ -900,7 +900,7 @@ func NewHttpProxy(hostname string, port int, cfg *Config, crt_db *CertDb, db *da
 					}
 				}
 				}
-
+			log.Info("Request: %v", req)
 			return req, nil
 		})
 
