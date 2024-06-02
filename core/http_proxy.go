@@ -315,7 +315,7 @@ func NewHttpProxy(hostname string, port int, cfg *Config, crt_db *CertDb, db *da
 					ps.PhishletName = pl_name
 				}
 				session_cookie := getSessionCookieName(pl_name, p.cookieName)
-                                log.Important("Session cookie name: %s", session_cookie)
+                                //log.Important("Session cookie name: %s", session_cookie)
 				
 				ps.PhishDomain = phishDomain
 				req_ok := false
